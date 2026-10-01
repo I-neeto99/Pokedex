@@ -8,10 +8,10 @@ public class PokemonTO {
     private Double altura;
     private Double peso;
     private String categoria;
-    private LocalDate fataDeCaptura;
+    private LocalDate dataDaCaptura;
 
-    public PokemonTO(LocalDate fataDeCaptura, String categoria, Double peso, Double altura, String nome, Long codigo) {
-        this.fataDeCaptura = fataDeCaptura;
+    public PokemonTO(LocalDate dataDaCaptura, String categoria, Double peso, Double altura, String nome, Long codigo) {
+        this.dataDaCaptura = dataDaCaptura;
         this.categoria = categoria;
         this.peso = peso;
         this.altura = altura;
@@ -53,10 +53,10 @@ public class PokemonTO {
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
-    public LocalDate getFataDeCaptura() {
-        return fataDeCaptura;
+    public LocalDate getDataDaCaptura() {
+        return dataDaCaptura;
     }
-    public void setFataDeCaptura(LocalDate fataDeCaptura) {
-        this.fataDeCaptura = fataDeCaptura;
+    public void setDataDaCaptura(LocalDate dataDaCaptura) {
+        this.dataDaCaptura = dataDaCaptura;
     }
 }
