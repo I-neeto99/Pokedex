@@ -1,0 +1,18 @@
+package br.com.fiap.resource;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+public class HomeResource {
+
+    @GetMapping("/")
+    public Map<String, String> home() {
+        return Map.of(
+                "aplicacao", "Pokedex API",
+                "endpoints", "/pokedex"
+        );
+    }
+}
