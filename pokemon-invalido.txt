@@ -1,0 +1,8 @@
+{
+  "codigo": 150,
+  "nome": "Mewtwo",
+  "altura": 2.0,
+  "peso": 122.0,
+  "categoria": "Genetico",
+  "dataDaCaptura": "2030-01-01"
+}
