@@ -5,11 +5,23 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    private static final String URL = "jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL";
-    private static final String USUARIO = "rm572912";
-    private static final String SENHA = "fiap25";
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USUARIO, SENHA);
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+
+            String url = System.getenv("DB_URL");
+            String user = System.getenv("DB_USER");
+            String password = System.getenv("DB_PASSWORD");
+
+            if (url == null || user == null || password == null) {
+                throw new RuntimeException("Variaveis de ambiente do banco nao configuradas!");
+            }
+
+            return DriverManager.getConnection(url, user, password);
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Driver do Oracle nao encontrado no classpath.", e);
+        }
     }
 }
