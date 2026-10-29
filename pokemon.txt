@@ -1,0 +1,8 @@
+{
+  "codigo": 25,
+  "nome": "Pikachu",
+  "altura": 0.4,
+  "peso": 6.0,
+  "categoria": "Rato",
+  "dataDaCaptura": "2024-05-10"
+}
