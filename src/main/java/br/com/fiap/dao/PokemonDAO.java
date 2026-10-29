@@ -97,4 +97,25 @@ public class PokemonDAO {
         }
         return false;
     }
+    public PokemonTO update(PokemonTO pokemon) {
+        String sql = "UPDATE pokemon SET nome = ?, altura = ?, peso = ?, categoria = ?, data_da_captura = ? WHERE codigo = ?";
+
+        try (Connection conexao = ConnectionFactory.getConnection();
+             PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+            comando.setString(1, pokemon.getNome());
+            comando.setDouble(2, pokemon.getAltura());
+            comando.setDouble(3, pokemon.getPeso());
+            comando.setString(4, pokemon.getCategoria());
+            comando.setDate(5, Date.valueOf(pokemon.getDataDaCaptura()));
+            comando.setLong(6, pokemon.getCodigo());
+
+            if (comando.executeUpdate() > 0) {
+                return pokemon;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar: " + e.getMessage());
+        }
+        return null;
+    }
 }

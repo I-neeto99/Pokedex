@@ -35,4 +35,11 @@ public class PokemonBO {
         pokemonDAO = new PokemonDAO();
         return pokemonDAO.delete(codigo);
     }
+    public PokemonTO update(PokemonTO pokemon) {
+        if (pokemon.getDataDaCaptura() == null || !pokemon.getDataDaCaptura().isBefore(LocalDate.now())) {
+            return null;
+        }
+        pokemonDAO = new PokemonDAO();
+        return pokemonDAO.update(pokemon);
+    }
 }
