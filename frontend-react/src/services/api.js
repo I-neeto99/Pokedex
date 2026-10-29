@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/pokedex';
+const BASE_URL = import.meta.env.VITE_API_URL ?? 'https://pokedex-api-lxa5.onrender.com/pokedex';
 
 export class ApiError extends Error {
   constructor(mensagem, status) {
