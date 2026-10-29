@@ -27,7 +27,7 @@ public class PokemonResource {
     }
 
     @PostMapping
-    public ResponseEntity<PokemonTO> save(@RequestBody PokemonTO pokemon) {
+    public ResponseEntity<PokemonTO> save(@Valid @RequestBody PokemonTO pokemon) {
         PokemonTO resultado = pokemonBO.save(pokemon);
         if (resultado != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(resultado);

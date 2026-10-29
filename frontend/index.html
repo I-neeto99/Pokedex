@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokedex</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --border: #dfe3e8;
+    --text: #1b1f24;
+    --muted: #6b7280;
+    --accent: #d7262c;
+    --accent-soft: #fdecec;
+    --ok: #0f7b4f;
+    --ok-soft: #e6f4ec;
+    --err: #b42318;
+    --err-soft: #fdecea;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161a;
+      --surface: #1d2026;
+      --border: #30353d;
+      --text: #e8eaed;
+      --muted: #9aa1ab;
+      --accent: #ff5d61;
+      --accent-soft: #3a1e20;
+      --ok: #4ade80;
+      --ok-soft: #16281e;
+      --err: #ff7b72;
+      --err-soft: #2e1b1a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161a;
+    --surface: #1d2026;
+    --border: #30353d;
+    --text: #e8eaed;
+    --muted: #9aa1ab;
+    --accent: #ff5d61;
+    --accent-soft: #3a1e20;
+    --ok: #4ade80;
+    --ok-soft: #16281e;
+    --err: #ff7b72;
+    --err-soft: #2e1b1a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 48px;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 28px 0 20px;
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: 24px;
+  }
+  header h1 { margin: 0; font-size: 26px; letter-spacing: -0.3px; }
+  header span { color: var(--muted); font-size: 13px; }
+
+  .grid { display: grid; gap: 20px; grid-template-columns: 1fr; }
+  @media (min-width: 820px) { .grid { grid-template-columns: 340px 1fr; align-items: start; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .card h2 { margin: 0 0 14px; font-size: 15px; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); }
+
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+
+  input {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .row { display: flex; gap: 10px; }
+  .row > * { flex: 1; }
+
+  button {
+    font: inherit;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+    background: var(--accent);
+    color: #fff;
+  }
+  button:hover { filter: brightness(1.08); }
+  button.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  button.small { padding: 5px 10px; font-size: 13px; font-weight: 500; }
+
+  .actions { display: flex; gap: 8px; margin-top: 16px; }
+
+  .toolbar { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .toolbar input { max-width: 150px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:hover { background: var(--accent-soft); }
+  .cell-actions { display: flex; gap: 6px; justify-content: flex-end; }
+
+  .empty { padding: 28px 8px; text-align: center; color: var(--muted); }
+
+  #msg { margin: 0 0 16px; padding: 11px 14px; border-radius: 7px; font-size: 14px; display: none; }
+  #msg.ok  { display: block; background: var(--ok-soft);  color: var(--ok);  border: 1px solid var(--ok); }
+  #msg.err { display: block; background: var(--err-soft); color: var(--err); border: 1px solid var(--err); }
+
+  .hint { font-size: 12px; color: var(--muted); margin-top: 14px; }
+  code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Pokedex</h1>
+    <span>Front-end consumindo a API em <code id="base"></code></span>
+  </header>
+
+  <p id="msg"></p>
+
+  <div class="grid">
+
+    <section class="card">
+      <h2 id="form-titulo">Cadastrar pokemon</h2>
+      <form id="form">
+        <label for="codigo">Codigo</label>
+        <input id="codigo" type="number" min="1" required>
+
+        <label for="nome">Nome</label>
+        <input id="nome" type="text" maxlength="50" required>
+
+        <div class="row">
+          <div>
+            <label for="altura">Altura (m)</label>
+            <input id="altura" type="number" step="0.01" min="0.01" required>
+          </div>
+          <div>
+            <label for="peso">Peso (kg)</label>
+            <input id="peso" type="number" step="0.1" min="0.1" required>
+          </div>
+        </div>
+
+        <label for="categoria">Categoria</label>
+        <input id="categoria" type="text" maxlength="50" required>
+
+        <label for="dataDaCaptura">Data da captura</label>
+        <input id="dataDaCaptura" type="date" required>
+
+        <div class="actions">
+          <button type="submit" id="salvar">Cadastrar</button>
+          <button type="button" class="ghost" id="limpar">Limpar</button>
+        </div>
+      </form>
+      <p class="hint">A data da captura precisa estar no passado.</p>
+    </section>
+
+    <section class="card">
+      <h2>Pokemons cadastrados</h2>
+      <div class="toolbar">
+        <input id="busca" type="number" min="1" placeholder="Buscar por codigo">
+        <button class="ghost" id="btn-buscar">Buscar</button>
+        <button class="ghost" id="btn-listar">Listar todos</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Cod.</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th class="num">Altura</th>
+            <th class="num">Peso</th>
+            <th>Captura</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="lista"></tbody>
+      </table>
+      <div class="empty" id="vazio">Nenhum pokemon para mostrar.</div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+const API = "http://localhost:8080/pokedex";
+document.getElementById("base").textContent = API;
+
+const form = document.getElementById("form");
+const lista = document.getElementById("lista");
+const vazio = document.getElementById("vazio");
+const msg = document.getElementById("msg");
+const titulo = document.getElementById("form-titulo");
+const btnSalvar = document.getElementById("salvar");
+const campoCodigo = document.getElementById("codigo");
+
+let editando = null;
+
+function aviso(texto, tipo) {
+  msg.textContent = texto;
+  msg.className = tipo;
+  if (tipo === "ok") setTimeout(() => { msg.className = ""; }, 4000);
+}
+
+async function erroDaResposta(resposta) {
+  try {
+    const corpo = await resposta.json();
+    if (corpo.errors && corpo.errors.length) {
+      return corpo.errors.map(e => e.defaultMessage).join(" | ");
+    }
+    if (corpo.message) return corpo.message;
+  } catch (e) {}
+  return "HTTP " + resposta.status + " " + resposta.statusText;
+}
+
+function lerFormulario() {
+  return {
+    codigo: Number(campoCodigo.value),
+    nome: document.getElementById("nome").value.trim(),
+    altura: Number(document.getElementById("altura").value),
+    peso: Number(document.getElementById("peso").value),
+    categoria: document.getElementById("categoria").value.trim(),
+    dataDaCaptura: document.getElementById("dataDaCaptura").value
+  };
+}
+
+function preencherFormulario(p) {
+  campoCodigo.value = p.codigo;
+  document.getElementById("nome").value = p.nome;
+  document.getElementById("altura").value = p.altura;
+  document.getElementById("peso").value = p.peso;
+  document.getElementById("categoria").value = p.categoria;
+  document.getElementById("dataDaCaptura").value = p.dataDaCaptura;
+}
+
+function modoCadastro() {
+  editando = null;
+  form.reset();
+  campoCodigo.disabled = false;
+  titulo.textContent = "Cadastrar pokemon";
+  btnSalvar.textContent = "Cadastrar";
+}
+
+function modoEdicao(p) {
+  editando = p.codigo;
+  preencherFormulario(p);
+  campoCodigo.disabled = true;
+  titulo.textContent = "Alterar pokemon " + p.codigo;
+  btnSalvar.textContent = "Salvar alteracoes";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function desenhar(pokemons) {
+  lista.innerHTML = "";
+  vazio.style.display = pokemons.length ? "none" : "block";
+
+  for (const p of pokemons) {
+    const tr = document.createElement("tr");
+
+    const celulas = [
+      ["", p.codigo],
+      ["", p.nome],
+      ["", p.categoria],
+      ["num", Number(p.altura).toFixed(2) + " m"],
+      ["num", Number(p.peso).toFixed(1) + " kg"],
+      ["", p.dataDaCaptura.split("-").reverse().join("/")]
+    ];
+
+    for (const [classe, valor] of celulas) {
+      const td = document.createElement("td");
+      td.className = classe;
+      td.textContent = valor;
+      tr.appendChild(td);
+    }
+
+    const td = document.createElement("td");
+    const acoes = document.createElement("div");
+    acoes.className = "cell-actions";
+
+    const editar = document.createElement("button");
+    editar.className = "ghost small";
+    editar.textContent = "Alterar";
+    editar.onclick = () => modoEdicao(p);
+
+    const excluir = document.createElement("button");
+    excluir.className = "small";
+    excluir.textContent = "Excluir";
+    excluir.onclick = () => remover(p.codigo, p.nome);
+
+    acoes.appendChild(editar);
+    acoes.appendChild(excluir);
+    td.appendChild(acoes);
+    tr.appendChild(td);
+
+    lista.appendChild(tr);
+  }
+}
+
+async function listar() {
+  try {
+    const resposta = await fetch(API);
+    if (!resposta.ok) { desenhar([]); return; }
+    desenhar(await resposta.json());
+  } catch (e) {
+    desenhar([]);
+    aviso("Nao foi possivel falar com a API. Ela esta rodando em " + API + "?", "err");
+  }
+}
+
+async function buscar() {
+  const codigo = document.getElementById("busca").value;
+  if (!codigo) { listar(); return; }
+  try {
+    const resposta = await fetch(API + "/" + codigo);
+    if (resposta.status === 404) {
+      desenhar([]);
+      aviso("Nenhum pokemon com o codigo " + codigo + ".", "err");
+      return;
+    }
+    desenhar([await resposta.json()]);
+    aviso("Pokemon " + codigo + " encontrado.", "ok");
+  } catch (e) {
+    aviso("Falha na busca: " + e.message, "err");
+  }
+}
+
+async function remover(codigo, nome) {
+  if (!confirm("Excluir " + nome + " (codigo " + codigo + ")?")) return;
+  try {
+    const resposta = await fetch(API + "/" + codigo, { method: "DELETE" });
+    if (resposta.status === 204) {
+      aviso(nome + " foi excluido.", "ok");
+      if (editando === codigo) modoCadastro();
+      listar();
+    } else {
+      aviso("Nao foi possivel excluir: " + await erroDaResposta(resposta), "err");
+    }
+  } catch (e) {
+    aviso("Falha ao excluir: " + e.message, "err");
+  }
+}
+
+form.addEventListener("submit", async (evento) => {
+  evento.preventDefault();
+  const pokemon = lerFormulario();
+  const alterando = editando !== null;
+
+  const url = alterando ? API + "/" + editando : API;
+  const metodo = alterando ? "PUT" : "POST";
+
+  try {
+    const resposta = await fetch(url, {
+      method: metodo,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pokemon)
+    });
+
+    if (resposta.ok) {
+      aviso(alterando ? "Pokemon alterado." : "Pokemon cadastrado.", "ok");
+      modoCadastro();
+      listar();
+    } else {
+      aviso("Erro: " + await erroDaResposta(resposta), "err");
+    }
+  } catch (e) {
+    aviso("Falha na requisicao: " + e.message, "err");
+  }
+});
+
+document.getElementById("limpar").onclick = modoCadastro;
+document.getElementById("btn-listar").onclick = () => {
+  document.getElementById("busca").value = "";
+  listar();
+};
+document.getElementById("btn-buscar").onclick = buscar;
+document.getElementById("busca").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); buscar(); }
+});
+
+listar();
+</script>
+</body>
+</html>
