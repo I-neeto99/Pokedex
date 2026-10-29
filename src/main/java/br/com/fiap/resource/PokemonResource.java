@@ -2,9 +2,11 @@ package br.com.fiap.resource;
 
 import br.com.fiap.bo.PokemonBO;
 import br.com.fiap.to.PokemonTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +29,18 @@ public class PokemonResource {
         }
     }
 
+    @GetMapping("/{codigo}")
+    public ResponseEntity<PokemonTO> findByCodigo(@PathVariable Long codigo) {
+        PokemonTO pokemon = pokemonBO.findByCodigo(codigo);
+        if (pokemon != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(pokemon);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pokemon);
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<PokemonTO> save(@RequestBody PokemonTO pokemon) {
+    public ResponseEntity<PokemonTO> save(@Valid @RequestBody PokemonTO pokemon) {
         PokemonTO resultado = pokemonBO.save(pokemon);
         if (resultado != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(resultado);

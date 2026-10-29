@@ -14,6 +14,14 @@ public class PokemonBO {
         return pokemonDAO.findAll();
     }
 
+    public PokemonTO findByCodigo(Long codigo) {
+        if (codigo == null || codigo <= 0) {
+            return null;
+        }
+        pokemonDAO = new PokemonDAO();
+        return pokemonDAO.findByCodigo(codigo);
+    }
+
     public PokemonTO save(PokemonTO pokemon) {
         if (pokemon.getDataDaCaptura() == null || !pokemon.getDataDaCaptura().isBefore(LocalDate.now())) {
             return null;
