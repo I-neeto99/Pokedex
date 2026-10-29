@@ -1,20 +1,16 @@
-FROM eclipse-temurin:21-jdk AS build
+# Use the Eclipse temurin alpine official image
+# https://hub.docker.com/_/eclipse-temurin
+FROM eclipse-temurin:21-jdk-alpine
 
+# Create and change to the app directory.
 WORKDIR /app
 
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+# Copy local code to the container image.
+COPY . ./
 
-COPY src/ src/
-RUN ./mvnw clean package -DskipTests -B
+# Build the app.
+RUN chmod +x mvnw
+RUN ./mvnw -DoutputFile=target/mvn-dependency-list.log -B -DskipTests clean dependency:list install
 
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-COPY --from=build /app/target/*.jar app.jar
-
-EXPOSE 8080
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the java app
+CMD ["sh", "-c", "java -jar target/Pokedex-0.0.1-SNAPSHOT.jar"]
