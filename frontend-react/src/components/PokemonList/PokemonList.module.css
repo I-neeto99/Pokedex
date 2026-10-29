@@ -1,0 +1,41 @@
+.painel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.cabecalho {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.corpo {
+  padding: 18px;
+}
+
+.busca {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.busca input {
+  flex: 1;
+  min-width: 130px;
+}
+
+.vazio {
+  text-align: center;
+  color: var(--muted);
+  padding: 34px 10px;
+  font-size: 14px;
+}

@@ -1,0 +1,91 @@
+.aparelho {
+  background: linear-gradient(170deg, var(--vermelho-claro), var(--vermelho) 45%, var(--vermelho-escuro));
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.22), var(--sombra);
+}
+
+.lente {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #d0ebff, var(--azul-lente) 42%, var(--azul-lente-escuro));
+  border: 4px solid #f1f3f5;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.25), inset 0 0 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  flex: none;
+}
+
+.lente::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 11px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  filter: blur(1px);
+}
+
+.luzes {
+  display: flex;
+  gap: 7px;
+  flex: none;
+}
+
+.luz {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.28);
+  background: #868e96;
+}
+
+.luz.vermelha {
+  background: #ff6b6b;
+}
+
+.luz.amarela {
+  background: #ffd43b;
+}
+
+.luz.verde {
+  background: #69db7c;
+}
+
+.titulo {
+  flex: 1;
+  min-width: 180px;
+}
+
+.titulo h1 {
+  margin: 0;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 17px;
+  line-height: 1.4;
+  color: #fff;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.titulo p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #fff;
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 600;
+}
