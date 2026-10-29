@@ -1,0 +1,35 @@
+.aviso {
+  margin-top: 16px;
+  padding: 11px 15px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sucesso {
+  background: var(--sucesso-bg);
+  color: var(--sucesso);
+  border-color: var(--sucesso);
+}
+
+.erro {
+  background: var(--erro-bg);
+  color: var(--erro);
+  border-color: var(--erro);
+}
+
+.fechar {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+  flex: none;
+}
