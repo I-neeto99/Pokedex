@@ -7,39 +7,42 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class PokemonBO {
-    private PokemonDAO pokemonDAO;
+    private final PokemonDAO pokemonDAO = new PokemonDAO();
 
     public ArrayList<PokemonTO> findAll() {
-        pokemonDAO = new PokemonDAO();
         return pokemonDAO.findAll();
     }
 
-    public PokemonTO save(PokemonTO pokemon) {
-        if (pokemon.getDataDaCaptura() == null || !pokemon.getDataDaCaptura().isBefore(LocalDate.now())) {
-            return null;
-        }
-        pokemonDAO = new PokemonDAO();
-        return pokemonDAO.save(pokemon);
-    }
     public PokemonTO findByCodigo(Long codigo) {
         if (codigo == null || codigo <= 0) {
             return null;
         }
-        pokemonDAO = new PokemonDAO();
         return pokemonDAO.findByCodigo(codigo);
     }
+
+    public PokemonTO save(PokemonTO pokemon) {
+        if (!dataDaCapturaValida(pokemon)) {
+            return null;
+        }
+        return pokemonDAO.save(pokemon);
+    }
+
+    public PokemonTO update(PokemonTO pokemon) {
+        if (!dataDaCapturaValida(pokemon)) {
+            return null;
+        }
+        return pokemonDAO.update(pokemon);
+    }
+
     public boolean delete(Long codigo) {
         if (codigo == null || codigo <= 0) {
             return false;
         }
-        pokemonDAO = new PokemonDAO();
         return pokemonDAO.delete(codigo);
     }
-    public PokemonTO update(PokemonTO pokemon) {
-        if (pokemon.getDataDaCaptura() == null || !pokemon.getDataDaCaptura().isBefore(LocalDate.now())) {
-            return null;
-        }
-        pokemonDAO = new PokemonDAO();
-        return pokemonDAO.update(pokemon);
+
+    private boolean dataDaCapturaValida(PokemonTO pokemon) {
+        return pokemon.getDataDaCaptura() != null
+                && pokemon.getDataDaCaptura().isBefore(LocalDate.now());
     }
 }

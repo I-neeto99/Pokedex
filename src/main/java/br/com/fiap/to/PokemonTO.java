@@ -5,12 +5,29 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 public class PokemonTO {
-    @NotNull @Positive private Long codigo;
-    @NotBlank @Size(max = 50) private String nome;
-    @NotNull @Positive private Double altura;
-    @NotNull @Positive private Double peso;
-    @NotBlank @Size(max = 50) private String categoria;
-    @NotNull @Past private LocalDate dataDaCaptura;
+    @NotNull(message = "O codigo e obrigatorio")
+    @Positive(message = "O codigo deve ser maior que zero")
+    private Long codigo;
+
+    @NotBlank(message = "O nome e obrigatorio")
+    @Size(max = 50, message = "O nome deve ter no maximo 50 caracteres")
+    private String nome;
+
+    @NotNull(message = "A altura e obrigatoria")
+    @Positive(message = "A altura deve ser maior que zero")
+    private Double altura;
+
+    @NotNull(message = "O peso e obrigatorio")
+    @Positive(message = "O peso deve ser maior que zero")
+    private Double peso;
+
+    @NotBlank(message = "A categoria e obrigatoria")
+    @Size(max = 50, message = "A categoria deve ter no maximo 50 caracteres")
+    private String categoria;
+
+    @NotNull(message = "A data da captura e obrigatoria")
+    @Past(message = "A data da captura deve ser uma data no passado")
+    private LocalDate dataDaCaptura;
 
     public PokemonTO() {}
 
