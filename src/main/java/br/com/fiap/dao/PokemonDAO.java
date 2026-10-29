@@ -58,4 +58,29 @@ public class PokemonDAO {
         }
         return null;
     }
+    public PokemonTO findByCodigo(Long codigo) {
+        String sql = "SELECT codigo, nome, altura, peso, categoria, data_da_captura FROM pokemon WHERE codigo = ?";
+
+        try (Connection conexao = ConnectionFactory.getConnection();
+             PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+            comando.setLong(1, codigo);
+
+            try (ResultSet resultado = comando.executeQuery()) {
+                if (resultado.next()) {
+                    return new PokemonTO(
+                            resultado.getLong("codigo"),
+                            resultado.getString("nome"),
+                            resultado.getDouble("altura"),
+                            resultado.getDouble("peso"),
+                            resultado.getString("categoria"),
+                            resultado.getDate("data_da_captura").toLocalDate()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao consultar por codigo: " + e.getMessage());
+        }
+        return null;
+    }
 }

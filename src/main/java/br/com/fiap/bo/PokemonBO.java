@@ -21,4 +21,11 @@ public class PokemonBO {
         pokemonDAO = new PokemonDAO();
         return pokemonDAO.save(pokemon);
     }
+    public PokemonTO findByCodigo(Long codigo) {
+        if (codigo == null || codigo <= 0) {
+            return null;
+        }
+        pokemonDAO = new PokemonDAO();
+        return pokemonDAO.findByCodigo(codigo);
+    }
 }
