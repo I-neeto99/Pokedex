@@ -41,4 +41,12 @@ public class PokemonResource {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(pokemon);
         }
     }
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<Void> delete(@PathVariable Long codigo) {
+        if (pokemonBO.delete(codigo)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
