@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokedex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vermelho: #c92a2a;
+    --vermelho-escuro: #8f1f1f;
+    --vermelho-claro: #e8453c;
+    --azul-lente: #4dabf7;
+    --azul-lente-escuro: #1864ab;
+
+    --bg: #ececef;
+    --surface: #ffffff;
+    --surface-2: #f6f6f8;
+    --border: #d8dade;
+    --text: #1a1c1f;
+    --muted: #6b7280;
+
+    --ok: #2b8a3e;
+    --ok-bg: #e7f5ea;
+    --err: #c92a2a;
+    --err-bg: #fdecec;
+
+    --radius: 12px;
+    --sombra: 0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.06);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121317;
+      --surface: #1c1e24;
+      --surface-2: #23262d;
+      --border: #333843;
+      --text: #e9eaee;
+      --muted: #969ba6;
+      --ok: #51cf66;
+      --ok-bg: #16301d;
+      --err: #ff8787;
+      --err-bg: #341c1c;
+      --sombra: 0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121317;
+    --surface: #1c1e24;
+    --surface-2: #23262d;
+    --border: #333843;
+    --text: #e9eaee;
+    --muted: #969ba6;
+    --ok: #51cf66;
+    --ok-bg: #16301d;
+    --err: #ff8787;
+    --err-bg: #341c1c;
+    --sombra: 0 1px 2px rgba(0,0,0,.4), 0 4px 16px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 0 16px 56px;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .wrap { max-width: 1060px; margin: 0 auto; }
+
+  .aparelho {
+    background: linear-gradient(170deg, var(--vermelho-claro), var(--vermelho) 45%, var(--vermelho-escuro));
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,.22), var(--sombra);
+  }
+
+  .lente {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 30%, #d0ebff, var(--azul-lente) 42%, var(--azul-lente-escuro));
+    border: 4px solid #f1f3f5;
+    box-shadow: 0 0 0 3px rgba(0,0,0,.25), inset 0 0 10px rgba(0,0,0,.3);
+    position: relative;
+    flex: none;
+  }
+  .lente::after {
+    content: "";
+    position: absolute; top: 9px; left: 11px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.85);
+    filter: blur(1px);
+  }
+
+  .luzes { display: flex; gap: 7px; flex: none; }
+  .luz { width: 13px; height: 13px; border-radius: 50%; border: 2px solid rgba(0,0,0,.28); }
+  .luz.vermelha  { background: #ff6b6b; }
+  .luz.amarela   { background: #ffd43b; }
+  .luz.verde     { background: #69db7c; }
+  .luz.apagada   { background: #868e96; }
+
+  .titulo { flex: 1; min-width: 180px; }
+  .titulo h1 {
+    margin: 0;
+    font-family: "Press Start 2P", monospace;
+    font-size: 17px;
+    line-height: 1.4;
+    color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,.35);
+  }
+  .titulo p { margin: 7px 0 0; font-size: 12px; color: rgba(255,255,255,.82); }
+
+  .status {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(0,0,0,.22);
+    color: #fff;
+    border-radius: 999px;
+    padding: 6px 13px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .grid { display: grid; gap: 20px; grid-template-columns: 1fr; margin-top: 22px; }
+  @media (min-width: 880px) { .grid { grid-template-columns: 350px 1fr; align-items: start; } }
+
+  .painel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--sombra);
+    overflow: hidden;
+  }
+  .painel > header {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .9px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .painel > .corpo { padding: 18px; }
+
+  label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin: 13px 0 5px; }
+  label:first-child { margin-top: 0; }
+
+  input {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+  }
+  input:focus { outline: 2px solid var(--vermelho-claro); outline-offset: 1px; background: var(--surface); }
+  input:disabled { opacity: .55; cursor: not-allowed; }
+
+  .duplo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  button {
+    font: inherit; font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 9px 15px;
+    cursor: pointer;
+    background: var(--vermelho);
+    color: #fff;
+    transition: filter .15s;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.1); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.neutro { background: transparent; color: var(--text); border-color: var(--border); }
+  button.mini { padding: 5px 11px; font-size: 12.5px; font-weight: 500; }
+
+  .botoes { display: flex; gap: 9px; margin-top: 19px; }
+  .botoes > button { flex: 1; }
+
+  .busca { display: flex; gap: 9px; margin-bottom: 15px; flex-wrap: wrap; }
+  .busca input { flex: 1; min-width: 130px; }
+
+  .cartao {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 13px 15px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--vermelho);
+    border-radius: 10px;
+    background: var(--surface-2);
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .cartao:last-child { margin-bottom: 0; }
+
+  .numero {
+    font-family: "Press Start 2P", monospace;
+    font-size: 11px;
+    color: var(--vermelho);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 8px;
+    flex: none;
+  }
+
+  .dados { flex: 1; min-width: 150px; }
+  .dados strong { display: block; font-size: 16px; letter-spacing: -.2px; }
+  .dados .categoria { font-size: 12.5px; color: var(--muted); }
+  .dados .medidas { font-size: 12.5px; color: var(--muted); margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+  .cartao .acoes { display: flex; gap: 7px; flex: none; }
+
+  .vazio { text-align: center; color: var(--muted); padding: 34px 10px; font-size: 14px; }
+
+  .aviso {
+    margin-top: 16px;
+    padding: 11px 15px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    font-weight: 500;
+    border: 1px solid;
+  }
+  .aviso.ok  { background: var(--ok-bg);  color: var(--ok);  border-color: var(--ok); }
+  .aviso.err { background: var(--err-bg); color: var(--err); border-color: var(--err); }
+
+  .dica { font-size: 11.5px; color: var(--muted); margin: 14px 0 0; }
+  code { background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 11.5px; }
+</style>
+</head>
+<body>
+<div id="raiz" class="wrap"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js" crossorigin></script>
+
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+const API = "http://localhost:8080/pokedex";
+
+const VAZIO = {
+  codigo: "",
+  nome: "",
+  altura: "",
+  peso: "",
+  categoria: "",
+  dataDaCaptura: ""
+};
+
+async function lerErro(resposta) {
+  try {
+    const corpo = await resposta.json();
+    if (corpo.errors && corpo.errors.length) {
+      return corpo.errors.map(e => e.defaultMessage).join(" | ");
+    }
+    if (corpo.message) return corpo.message;
+  } catch (e) {}
+  return "HTTP " + resposta.status + " " + resposta.statusText;
+}
+
+function formatarNumero(codigo) {
+  return "#" + String(codigo).padStart(3, "0");
+}
+
+function formatarData(iso) {
+  if (!iso) return "-";
+  const [ano, mes, dia] = iso.split("-");
+  return dia + "/" + mes + "/" + ano;
+}
+
+function Cabecalho({ online }) {
+  return (
+    <div className="aparelho">
+      <div className="lente"></div>
+      <div className="luzes">
+        <span className={"luz " + (online ? "vermelha" : "apagada")}></span>
+        <span className={"luz " + (online ? "amarela" : "apagada")}></span>
+        <span className={"luz " + (online ? "verde" : "apagada")}></span>
+      </div>
+      <div className="titulo">
+        <h1>POKEDEX</h1>
+        <p>Front-end React consumindo a API em localhost:8080</p>
+      </div>
+      <span className="status">
+        {online === null ? "Verificando..." : online ? "API conectada" : "API fora do ar"}
+      </span>
+    </div>
+  );
+}
+
+function Formulario({ valores, editando, ocupado, aoMudar, aoEnviar, aoCancelar }) {
+  function campo(nome, rotulo, tipo, extras = {}) {
+    return (
+      <React.Fragment>
+        <label htmlFor={nome}>{rotulo}</label>
+        <input
+          id={nome}
+          type={tipo}
+          value={valores[nome]}
+          onChange={e => aoMudar(nome, e.target.value)}
+          disabled={ocupado || (nome === "codigo" && editando)}
+          required
+          {...extras}
+        />
+      </React.Fragment>
+    );
+  }
+
+  return (
+    <section className="painel">
+      <header>{editando ? "Alterar pokemon " + formatarNumero(valores.codigo) : "Cadastrar pokemon"}</header>
+      <div className="corpo">
+        <form onSubmit={aoEnviar}>
+          {campo("codigo", "Codigo", "number", { min: 1 })}
+          {campo("nome", "Nome", "text", { maxLength: 50 })}
+
+          <div className="duplo">
+            <div>{campo("altura", "Altura (m)", "number", { step: "0.01", min: "0.01" })}</div>
+            <div>{campo("peso", "Peso (kg)", "number", { step: "0.1", min: "0.1" })}</div>
+          </div>
+
+          {campo("categoria", "Categoria", "text", { maxLength: 50 })}
+          {campo("dataDaCaptura", "Data da captura", "date")}
+
+          <div className="botoes">
+            <button type="submit" disabled={ocupado}>
+              {editando ? "Salvar" : "Cadastrar"}
+            </button>
+            <button type="button" className="neutro" onClick={aoCancelar} disabled={ocupado}>
+              {editando ? "Cancelar" : "Limpar"}
+            </button>
+          </div>
+        </form>
+        <p className="dica">A data da captura precisa estar no passado.</p>
+      </div>
+    </section>
+  );
+}
+
+function Cartao({ pokemon, ocupado, aoEditar, aoExcluir }) {
+  return (
+    <article className="cartao">
+      <div className="numero">{formatarNumero(pokemon.codigo)}</div>
+      <div className="dados">
+        <strong>{pokemon.nome}</strong>
+        <span className="categoria">{pokemon.categoria}</span>
+        <div className="medidas">
+          {Number(pokemon.altura).toFixed(2)} m · {Number(pokemon.peso).toFixed(1)} kg · capturado em {formatarData(pokemon.dataDaCaptura)}
+        </div>
+      </div>
+      <div className="acoes">
+        <button className="neutro mini" onClick={() => aoEditar(pokemon)} disabled={ocupado}>Alterar</button>
+        <button className="mini" onClick={() => aoExcluir(pokemon)} disabled={ocupado}>Excluir</button>
+      </div>
+    </article>
+  );
+}
+
+function Lista({ pokemons, ocupado, busca, aoMudarBusca, aoBuscar, aoListar, aoEditar, aoExcluir }) {
+  return (
+    <section className="painel">
+      <header>Pokemons cadastrados</header>
+      <div className="corpo">
+        <div className="busca">
+          <input
+            type="number"
+            min="1"
+            placeholder="Buscar por codigo"
+            value={busca}
+            onChange={e => aoMudarBusca(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") aoBuscar(); }}
+          />
+          <button className="neutro" onClick={aoBuscar} disabled={ocupado}>Buscar</button>
+          <button className="neutro" onClick={aoListar} disabled={ocupado}>Listar todos</button>
+        </div>
+
+        {pokemons.length === 0
+          ? <div className="vazio">Nenhum pokemon para mostrar.</div>
+          : pokemons.map(p => (
+              <Cartao
+                key={p.codigo}
+                pokemon={p}
+                ocupado={ocupado}
+                aoEditar={aoEditar}
+                aoExcluir={aoExcluir}
+              />
+            ))
+        }
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [pokemons, setPokemons] = useState([]);
+  const [formulario, setFormulario] = useState(VAZIO);
+  const [editando, setEditando] = useState(null);
+  const [busca, setBusca] = useState("");
+  const [aviso, setAviso] = useState(null);
+  const [ocupado, setOcupado] = useState(false);
+  const [online, setOnline] = useState(null);
+
+  function mostrar(texto, tipo) {
+    setAviso({ texto, tipo });
+    if (tipo === "ok") setTimeout(() => setAviso(null), 4000);
+  }
+
+  const listar = useCallback(async () => {
+    setOcupado(true);
+    try {
+      const resposta = await fetch(API);
+      setOnline(true);
+      if (!resposta.ok) {
+        setPokemons([]);
+        mostrar("A API respondeu " + resposta.status + " ao listar.", "err");
+        return;
+      }
+      setPokemons(await resposta.json());
+    } catch (e) {
+      setOnline(false);
+      setPokemons([]);
+      mostrar("Nao foi possivel falar com a API. Ela esta rodando em " + API + " ?", "err");
+    } finally {
+      setOcupado(false);
+    }
+  }, []);
+
+  useEffect(() => { listar(); }, [listar]);
+
+  async function buscar() {
+    if (!busca) { listar(); return; }
+    setOcupado(true);
+    try {
+      const resposta = await fetch(API + "/" + busca);
+      setOnline(true);
+      if (resposta.status === 404) {
+        setPokemons([]);
+        mostrar("Nenhum pokemon com o codigo " + busca + ".", "err");
+        return;
+      }
+      setPokemons([await resposta.json()]);
+      setAviso(null);
+    } catch (e) {
+      setOnline(false);
+      mostrar("Falha na busca: " + e.message, "err");
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function enviar(evento) {
+    evento.preventDefault();
+    setOcupado(true);
+
+    const corpo = {
+      codigo: Number(formulario.codigo),
+      nome: formulario.nome.trim(),
+      altura: Number(formulario.altura),
+      peso: Number(formulario.peso),
+      categoria: formulario.categoria.trim(),
+      dataDaCaptura: formulario.dataDaCaptura
+    };
+
+    const url = editando ? API + "/" + editando : API;
+    const metodo = editando ? "PUT" : "POST";
+
+    try {
+      const resposta = await fetch(url, {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(corpo)
+      });
+      setOnline(true);
+
+      if (resposta.ok) {
+        mostrar(editando ? "Pokemon alterado." : "Pokemon cadastrado.", "ok");
+        cancelar();
+        listar();
+      } else {
+        mostrar(await lerErro(resposta), "err");
+      }
+    } catch (e) {
+      setOnline(false);
+      mostrar("Falha na requisicao: " + e.message, "err");
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  async function excluir(pokemon) {
+    if (!confirm("Excluir " + pokemon.nome + " (" + formatarNumero(pokemon.codigo) + ")?")) return;
+    setOcupado(true);
+    try {
+      const resposta = await fetch(API + "/" + pokemon.codigo, { method: "DELETE" });
+      setOnline(true);
+      if (resposta.status === 204) {
+        mostrar(pokemon.nome + " foi excluido.", "ok");
+        if (editando === pokemon.codigo) cancelar();
+        listar();
+      } else {
+        mostrar("Nao foi possivel excluir: " + await lerErro(resposta), "err");
+      }
+    } catch (e) {
+      setOnline(false);
+      mostrar("Falha ao excluir: " + e.message, "err");
+    } finally {
+      setOcupado(false);
+    }
+  }
+
+  function editar(pokemon) {
+    setEditando(pokemon.codigo);
+    setFormulario({
+      codigo: String(pokemon.codigo),
+      nome: pokemon.nome,
+      altura: String(pokemon.altura),
+      peso: String(pokemon.peso),
+      categoria: pokemon.categoria,
+      dataDaCaptura: pokemon.dataDaCaptura
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelar() {
+    setEditando(null);
+    setFormulario(VAZIO);
+  }
+
+  function mudarCampo(nome, valor) {
+    setFormulario(anterior => ({ ...anterior, [nome]: valor }));
+  }
+
+  return (
+    <React.Fragment>
+      <Cabecalho online={online} />
+
+      {aviso && <div className={"aviso " + aviso.tipo}>{aviso.texto}</div>}
+
+      <div className="grid">
+        <Formulario
+          valores={formulario}
+          editando={editando !== null}
+          ocupado={ocupado}
+          aoMudar={mudarCampo}
+          aoEnviar={enviar}
+          aoCancelar={cancelar}
+        />
+        <Lista
+          pokemons={pokemons}
+          ocupado={ocupado}
+          busca={busca}
+          aoMudarBusca={setBusca}
+          aoBuscar={buscar}
+          aoListar={() => { setBusca(""); listar(); }}
+          aoEditar={editar}
+          aoExcluir={excluir}
+        />
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("raiz")).render(<App />);
+</script>
+</body>
+</html>
