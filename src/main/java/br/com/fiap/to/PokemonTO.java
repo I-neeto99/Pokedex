@@ -6,10 +6,10 @@ import java.time.LocalDate;
 
 public class PokemonTO {
     @NotNull @Positive private Long codigo;
-    @NotBlank @Size private String nome;
+    @NotBlank private String nome;
     @NotNull @Positive private Double altura;
     @NotNull @Positive private Double peso;
-    @NotBlank @Size private String categoria;
+    @NotBlank private String categoria;
     @NotNull @Past private LocalDate dataDaCaptura;
 
     public PokemonTO() {}
