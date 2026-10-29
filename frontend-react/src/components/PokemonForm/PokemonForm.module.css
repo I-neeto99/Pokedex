@@ -1,0 +1,56 @@
+.painel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--sombra);
+  overflow: hidden;
+}
+
+.cabecalho {
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.corpo {
+  padding: 18px;
+}
+
+.campo {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 13px 0 5px;
+}
+
+.campo:first-of-type {
+  margin-top: 0;
+}
+
+.duplo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.botoes {
+  display: flex;
+  gap: 9px;
+  margin-top: 19px;
+}
+
+.botoes > button {
+  flex: 1;
+}
+
+.dica {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 14px 0 0;
+}

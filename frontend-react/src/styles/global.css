@@ -1,0 +1,118 @@
+:root {
+  --vermelho: #c92a2a;
+  --vermelho-escuro: #8f1f1f;
+  --vermelho-claro: #e8453c;
+  --azul-lente: #4dabf7;
+  --azul-lente-escuro: #1864ab;
+
+  --bg: #ececef;
+  --surface: #ffffff;
+  --surface-2: #f6f6f8;
+  --border: #d8dade;
+  --text: #1a1c1f;
+  --muted: #6b7280;
+
+  --sucesso: #2b8a3e;
+  --sucesso-bg: #e7f5ea;
+  --erro: #c92a2a;
+  --erro-bg: #fdecec;
+
+  --radius: 12px;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #121317;
+    --surface: #1c1e24;
+    --surface-2: #23262d;
+    --border: #333843;
+    --text: #e9eaee;
+    --muted: #969ba6;
+    --sucesso: #51cf66;
+    --sucesso-bg: #16301d;
+    --erro: #ff8787;
+    --erro-bg: #341c1c;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #121317;
+  --surface: #1c1e24;
+  --surface-2: #23262d;
+  --border: #333843;
+  --text: #e9eaee;
+  --muted: #969ba6;
+  --sucesso: #51cf66;
+  --sucesso-bg: #16301d;
+  --erro: #ff8787;
+  --erro-bg: #341c1c;
+  --sombra: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0 16px 56px;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.55 Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+}
+
+input:focus {
+  outline: 2px solid var(--vermelho-claro);
+  outline-offset: 1px;
+  background: var(--surface);
+}
+
+input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 15px;
+  cursor: pointer;
+  background: var(--vermelho);
+  color: #fff;
+  transition: filter 0.15s;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.neutro {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+button.mini {
+  padding: 5px 11px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
